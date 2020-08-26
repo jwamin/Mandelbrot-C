@@ -1,11 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int main(void)
+
+int main(int argc, const char **argv)
 {
     const int width = 2048*4, height = 2048*4;
 
-    int max = 5000;
+    int max = 100;
 
     static unsigned char white[3];
     white[0] = 255;  /* red */

@@ -1,8 +1,20 @@
 # Mandelbrot-C
 
+![Set](pic.jpg?raw=true "Screenshot")
+
 ### Drawing the set with the C Programming Language
 
 `.ppm` output
+
+### Nice Ideas
+
+More sophisticated image generation with `Cairo`
+
+Better Colours, function or structure to substiture colors
+
+Threading (VERY single threaded right now)
+
+JPEG or PNG output
 
 ### Resources
 
