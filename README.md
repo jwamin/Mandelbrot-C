@@ -1,5 +1,7 @@
 # Mandelbrot-C
 
+![Set](pic.jpg?raw=true "Screenshot")
+
 ### Drawing the set with the C Programming Language
 
 `.ppm` output
