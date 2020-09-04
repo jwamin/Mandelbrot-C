@@ -6,7 +6,7 @@
 
 int main(int argc, const char **argv)
 {
-    const int width = 2048*4, height = 2048*4;
+    const int width = 300, height = 300;
 
     int max = 100;
 
@@ -36,10 +36,14 @@ int main(int argc, const char **argv)
     FILE *fp = fopen("first.ppm", "wb"); /* b - binary mode */
     (void) fprintf(fp, "P6\n%d %d\n255\n", width, height);
 
+    // -4 - 4 range (double) // 0 center
+    double xOffset = 0;
+    double yOffset = 0;
+
     for (int row = 0; row < height; row++) {
         for (int col = 0; col < width; col++) {
-            double c_re = (col - width/2.0)*4.0/width;
-            double c_im = (row - height/2.0)*4.0/width;
+            double c_re = (col - width/2.0)*4.0/width + xOffset;
+            double c_im = (row - height/2.0)*4.0/width + yOffset;
             double x = 0, y = 0;
             int iteration = 0;
             while (x*x+y*y <= 4 && iteration < max) {
