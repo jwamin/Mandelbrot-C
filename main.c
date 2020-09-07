@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include "mandelbrot.h"
 
 #define MODULO_MAX 256
 
@@ -42,17 +43,10 @@ int main(int argc, const char **argv)
 
     for (int row = 0; row < height; row++) {
         for (int col = 0; col < width; col++) {
-            double c_re = (col - width/2.0)*4.0/width + xOffset;
-            double c_im = (row - height/2.0)*4.0/width + yOffset;
-            double x = 0, y = 0;
-            int iteration = 0;
-            while (x*x+y*y <= 4 && iteration < max) {
-                double x_new = x*x - y*y + c_re;
-                y = 2*x*y + c_im;
-                x = x_new;
-                iteration++;
-            }
-            if (iteration < max) {
+
+            int iteration = renderPixel(fp,col,row,width,height,xOffset,yOffset,max);
+
+            if ( iteration > 0 ) {
                 int increase = iteration * 100;
                 static unsigned char other[3];
 

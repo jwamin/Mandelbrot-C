@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.16)
 project(Brot C)
 
 set(CMAKE_C_STANDARD 99)
@@ -9,5 +9,5 @@ find_package(Cairo)
 link_directories(/usr/local/Cellar/cairo/1.16.0_3/lib)
 include_directories(${CAIRO_INCLUDE_DIRS})
 
-add_executable(Brot main.c)
+add_executable(Brot main.c mandelbrot.h mandelbrot.c)
 target_link_libraries(Brot cairo)
