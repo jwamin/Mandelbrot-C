@@ -52,34 +52,49 @@ int main(int argc, const char **argv)
     int testX, testY = 0;
     int testDimensionX, testDimensionY = 0;
 
-    while (currentX < width && currentY < height) {
 
-        testX += xDimension;
+    // y outer
+    while (currentY < height) {
+
         testY += yDimension;
-
-        testDimensionX = xDimension;
         testDimensionY = yDimension;
 
-        if (testX >= width) {
-            testX = width;
-            //update xDimension
-            testDimensionX = width - currentX;
-        }
-
         if (testY >= height) {
-            testX = height;
+            testY = height;
             //update yDimension
             testDimensionY = height - currentY;
         }
 
-        testDimensionX = min(xDimension, testDimensionX);
         testDimensionY = min(yDimension, testDimensionY);
 
-        createSquare(currentX,currentY,testDimensionX,testDimensionY,randomR,randomB,randomG);
+        //x inner
+        while (currentX < width) {
 
-        currentX = testX;
-        currentY = testX;
+            testX += xDimension;
 
+            testDimensionX = min(xDimension, testDimensionX);
+
+            if (testX >= width) {
+                testX = width;
+
+                //update xDimension
+                testDimensionX = width - currentX;
+
+            }
+
+            createSquare(currentX,currentY,testDimensionX,testDimensionY,randomR,randomB,randomG);
+
+            currentX = testX;
+
+        }
+
+        currentY = testY;
+
+        testDimensionX = 0;
+        currentX = 0;
+        testX = 0;
+
+        printf("returning\n");
     }
 
 //    for (int row = 0; row < height; row++) {
