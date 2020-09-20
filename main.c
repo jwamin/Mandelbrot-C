@@ -3,10 +3,14 @@
 #include <time.h>
 
 #define MODULO_MAX 256
+#define ITERATION_MAX 100
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
 
 void createSquare(int x, int y, int dimensionX, int dimensionY, int r, int g, int b);
+
+static unsigned char black[3];
+static unsigned char white[3];
 
 int main(int argc, const char **argv)
 {
@@ -14,16 +18,7 @@ int main(int argc, const char **argv)
 
     const int xDimension = 50, yDimension = 50;
 
-    int max = 100;
 
-    static unsigned char white[3];
-    white[0] = 255;  /* red */
-    white[1] = 255;  /* green */
-    white[2] = 255;  /* blue */
-    static unsigned char black[3];
-    black[0] = 0;  /* red */
-    black[1] = 0;  /* green */
-    black[2] = 0;  /* blue */
 
     time_t t;
 
@@ -38,6 +33,12 @@ int main(int argc, const char **argv)
     //suggested algorithm
     //"dictionary" - if iteration encountered before, get color
     // if not, generate new color
+
+    createSquare(50,50,300,300,randomR,randomG,randomB);
+
+    //We are returning here
+    return EXIT_SUCCESS;
+
 
     FILE *fp = fopen("first.ppm", "wb"); /* b - binary mode */
     (void) fprintf(fp, "P6\n%d %d\n255\n", width, height);
@@ -97,36 +98,51 @@ int main(int argc, const char **argv)
         printf("returning\n");
     }
 
-//    for (int row = 0; row < height; row++) {
-//        for (int col = 0; col < width; col++) {
-//            double c_re = (col - width/2.0)*4.0/width + xOffset;
-//            double c_im = (row - height/2.0)*4.0/width + yOffset;
-//            double x = 0, y = 0;
-//            int iteration = 0;
-//            while (x*x+y*y <= 4 && iteration < max) {
-//                double x_new = x*x - y*y + c_re;
-//                y = 2*x*y + c_im;
-//                x = x_new;
-//                iteration++;
-//            }
-//            if (iteration < max) {
-//                int increase = iteration * 100;
-//                static unsigned char other[3];
-//
-//                other[0] = randomR * increase;  /* red */
-//                other[1] = randomG * increase;  /* green */
-//                other[2] = randomB * increase;  /* blue */
-//
-//                //printf("iteration: %d other: r:%d, g:%d, b:%d\n",iteration,other[0],other[1],other[2]);
-//                (void) fwrite(other, 1, 3, fp);
-//            } else {
-//                (void) fwrite(black, 1, 3, fp);
-//            }
-//        }
-//    }
+
     (void) fclose(fp);
     return EXIT_SUCCESS;
 }
+
+
+void drawEntireSet(FILE *fp, int width, int height, int xOff, int yOff, int r, int g, int b){
+
+    int xOffset = xOff | 0;
+    int yOffset = yOff | 0;
+
+    int randomR = r;
+    int randomB = b;
+    int randomG = g;
+
+    for (int row = 0; row < height; row++) {
+        for (int col = 0; col < width; col++) {
+            double c_re = (col - width/2.0)*4.0/width + xOffset;
+            double c_im = (row - height/2.0)*4.0/width + yOffset;
+            double x = 0, y = 0;
+            int iteration = 0;
+            while (x*x+y*y <= 4 && iteration < ITERATION_MAX) {
+                double x_new = x*x - y*y + c_re;
+                y = 2*x*y + c_im;
+                x = x_new;
+                iteration++;
+            }
+            if (iteration < ITERATION_MAX) {
+                int increase = iteration * 100;
+                static unsigned char other[3];
+
+                other[0] = randomR * increase;  /* red */
+                other[1] = randomG * increase;  /* green */
+                other[2] = randomB * increase;  /* blue */
+
+                //printf("iteration: %d other: r:%d, g:%d, b:%d\n",iteration,other[0],other[1],other[2]);
+                (void) fwrite(other, 1, 3, fp);
+            } else {
+                (void) fwrite(black, 1, 3, fp);
+            }
+        }
+    }
+
+}
+
 
 void createSquare(int x,int y,int dimensionX, int dimensionY ,int r, int g, int b){
 
@@ -134,6 +150,50 @@ void createSquare(int x,int y,int dimensionX, int dimensionY ,int r, int g, int 
 
     //create ppm with dimensions
 
+
+    white[0] = 255;  /* red */
+    white[1] = 255;  /* green */
+    white[2] = 255;  /* blue */
+
+    black[0] = 0;  /* red */
+    black[1] = 0;  /* green */
+    black[2] = 0;  /* blue */
+
+    FILE *fp = fopen("test.ppm", "wb");
+    (void) fprintf(fp, "P6\n%d %d\n255\n", dimensionX, dimensionY);
+
+    int dimensionXMax = x + dimensionX;
+    int dimensionYMax = y + dimensionY;
+
+    for (int row = y; row < dimensionYMax; row++) {
+        for (int col = x; col < dimensionYMax; col++) {
+            double c_re = (col - dimensionXMax/2.0)*4.0/dimensionXMax;
+            double c_im = (row - dimensionYMax/2.0)*4.0/dimensionYMax;
+            double x = 0, y = 0;
+            int iteration = 0;
+            while (x*x+y*y <= 4 && iteration < ITERATION_MAX) {
+                double x_new = x*x - y*y + c_re;
+                y = 2*x*y + c_im;
+                x = x_new;
+                iteration++;
+            }
+            if (iteration < ITERATION_MAX) {
+                int increase = iteration * 100;
+                static unsigned char other[3];
+
+                other[0] = r * increase;  /* red */
+                other[1] = g * increase;  /* green */
+                other[2] = b * increase;  /* blue */
+
+                //printf("iteration: %d other: r:%d, g:%d, b:%d\n",iteration,other[0],other[1],other[2]);
+                (void) fwrite(other, 1, 3, fp);
+            } else {
+                (void) fwrite(black, 1, 3, fp);
+            }
+        }
+    }
+
+    (void) fclose(fp);
     //render mandelbrot, in the dimensions specified, with offset
 
 }
