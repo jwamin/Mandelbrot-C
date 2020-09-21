@@ -34,7 +34,7 @@ int main(int argc, const char **argv)
     //"dictionary" - if iteration encountered before, get color
     // if not, generate new color
 
-    createSquare(50,50,300,300,randomR,randomG,randomB);
+    createSquare(50,50,100,100,randomR,randomG,randomB);
 
     //We are returning here
     return EXIT_SUCCESS;
