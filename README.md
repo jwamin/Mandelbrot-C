@@ -1,16 +1,18 @@
 # Mandelbrot-C
 
-![Set](pic.jpg?raw=true "Screenshot")
+![Set](hi-res-zoom.jpg?raw=true "Screenshot")
 
 ### Drawing the set with the C Programming Language
 
 `.ppm` output
 
+current status - able to draw tiles from the set by setting the max dimensions
+
 ### Nice Ideas
 
 More sophisticated image generation with `Cairo`
 
-Better Colours, function or structure to substiture colors
+Better Colours, function or structure to substitute colors
 
 Threading (VERY single threaded right now)
 
