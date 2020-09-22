@@ -12,6 +12,9 @@ void createSquare(int x, int y, int dimensionX, int dimensionY, int r, int g, in
 static unsigned char black[3];
 static unsigned char white[3];
 
+static int width = 10000;
+static int height = 10000;
+
 int main(int argc, const char **argv)
 {
     const int width = 301, height = 301;
@@ -34,7 +37,7 @@ int main(int argc, const char **argv)
     //"dictionary" - if iteration encountered before, get color
     // if not, generate new color
 
-    createSquare(50,50,100,100,randomR,randomG,randomB);
+    createSquare(1200,5000,1000,1000,randomR,randomG,randomB);
 
     //We are returning here
     return EXIT_SUCCESS;
@@ -148,6 +151,8 @@ void createSquare(int x,int y,int dimensionX, int dimensionY ,int r, int g, int 
 
     printf("will create a square at x:%d y:%d, with dimension x: %d, y:%d, r %d, g %d b %d\n", x, y, dimensionX, dimensionY, r, g, b);
 
+    printf("x:%d to %d, y:%d to %d\n", x, x+dimensionX, y, y+dimensionY);
+
     //create ppm with dimensions
 
 
@@ -166,9 +171,9 @@ void createSquare(int x,int y,int dimensionX, int dimensionY ,int r, int g, int 
     int dimensionYMax = y + dimensionY;
 
     for (int row = y; row < dimensionYMax; row++) {
-        for (int col = x; col < dimensionYMax; col++) {
-            double c_re = (col - dimensionXMax/2.0)*4.0/dimensionXMax;
-            double c_im = (row - dimensionYMax/2.0)*4.0/dimensionYMax;
+        for (int col = x; col < dimensionXMax; col++) {
+            double c_re = (col - width/2.0)*4.0/width;
+            double c_im = (row - height/2.0)*4.0/width;
             double x = 0, y = 0;
             int iteration = 0;
             while (x*x+y*y <= 4 && iteration < ITERATION_MAX) {
