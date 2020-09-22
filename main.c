@@ -8,6 +8,7 @@
 #define min(a, b) ((a) < (b) ? (a) : (b))
 
 void createSquare(int x, int y, int dimensionX, int dimensionY, int r, int g, int b);
+void* generateSquareDimensions(int xDimension, int yDimension);
 
 static unsigned char black[3];
 static unsigned char white[3];
@@ -37,73 +38,17 @@ int main(int argc, const char **argv)
     //"dictionary" - if iteration encountered before, get color
     // if not, generate new color
 
+    int* intptr = generateSquareDimensions(xDimension,yDimension);
+
+    free(intptr);
+
     createSquare(1200,5000,1000,1000,randomR,randomG,randomB);
 
     //We are returning here
     return EXIT_SUCCESS;
 
 
-    FILE *fp = fopen("first.ppm", "wb"); /* b - binary mode */
-    (void) fprintf(fp, "P6\n%d %d\n255\n", width, height);
 
-    // -4 - 4 range (double) // 0 center
-    double xOffset = 0;
-    double yOffset = 0;
-
-    //divide up the full canvas into x/yDimension increments, any remainder, make that size
-
-    int currentX, currentY = 0;
-    int testX, testY = 0;
-    int testDimensionX, testDimensionY = 0;
-
-
-    // y outer
-    while (currentY < height) {
-
-        testY += yDimension;
-        testDimensionY = yDimension;
-
-        if (testY >= height) {
-            testY = height;
-            //update yDimension
-            testDimensionY = height - currentY;
-        }
-
-        testDimensionY = min(yDimension, testDimensionY);
-
-        //x inner
-        while (currentX < width) {
-
-            testX += xDimension;
-
-            testDimensionX = min(xDimension, testDimensionX);
-
-            if (testX >= width) {
-                testX = width;
-
-                //update xDimension
-                testDimensionX = width - currentX;
-
-            }
-
-            createSquare(currentX,currentY,testDimensionX,testDimensionY,randomR,randomB,randomG);
-
-            currentX = testX;
-
-        }
-
-        currentY = testY;
-
-        testDimensionX = 0;
-        currentX = 0;
-        testX = 0;
-
-        printf("returning\n");
-    }
-
-
-    (void) fclose(fp);
-    return EXIT_SUCCESS;
 }
 
 
@@ -143,6 +88,69 @@ void drawEntireSet(FILE *fp, int width, int height, int xOff, int yOff, int r, i
             }
         }
     }
+
+}
+
+void* generateSquareDimensions(int xDimension, int yDimension){
+
+    // -4 - 4 range (double) // 0 center
+    double xOffset = 0;
+    double yOffset = 0;
+
+    //divide up the full canvas into x/yDimension increments, any remainder, make that size
+
+    int currentX, currentY = 0;
+    int testX, testY = 0;
+    int testDimensionX, testDimensionY = 0;
+
+    // y outer
+    while (currentY < height) {
+
+        testY += yDimension;
+        testDimensionY = yDimension;
+
+        if (testY >= height) {
+            testY = height;
+            //update yDimension
+            testDimensionY = height - currentY;
+        }
+
+        testDimensionY = min(yDimension, testDimensionY);
+
+        //x inner
+        while (currentX < width) {
+
+            testX += xDimension;
+
+            testDimensionX = min(xDimension, testDimensionX);
+
+            if (testX >= width) {
+                testX = width;
+
+                //update xDimension
+                testDimensionX = width - currentX;
+
+            }
+
+            printf("x: %d y: %d xD: %d yD: %d \n",currentX,currentY,testDimensionX,testDimensionY);
+
+            //we would call threaded draw function here?
+
+            currentX = testX;
+
+        }
+
+        currentY = testY;
+
+        testDimensionX = 0;
+        currentX = 0;
+        testX = 0;
+
+        printf("returning\n");
+
+    }
+
+    return malloc(sizeof(int));
 
 }
 
