@@ -6,7 +6,7 @@ set(CMAKE_C_STANDARD 99)
 
 #find_package(Cairo)
 
-link_directories(/usr/local/Cellar/cairo/1.16.0_3/lib)
+#link_directories(/usr/local/Cellar/cairo/1.16.0_3/lib)
 #include_directories(${CAIRO_INCLUDE_DIRS})
 
 add_executable(Brot main.c)
