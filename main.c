@@ -99,9 +99,9 @@ void* generateSquareDimensions(int xDimension, int yDimension){
 
     //divide up the full canvas into x/yDimension increments, any remainder, make that size
 
-    int currentX, currentY = 0;
-    int testX, testY = 0;
-    int testDimensionX, testDimensionY = 0;
+    int currentX = 0, currentY = 0;
+    int testX = 0, testY = 0;
+    int testDimensionX = 0, testDimensionY = 0;
 
     // y outer
     while (currentY < height) {
