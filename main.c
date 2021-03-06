@@ -7,47 +7,44 @@
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
 
-void createSquare(int x, int y, int dimensionX, int dimensionY, int r, int g, int b);
+void createSquare(int maxX, int maxY, int originX, int originY, int dimensionX, int dimensionY, int r, int g, int b);
 void* generateSquareDimensions(int xDimension, int yDimension);
 
 static unsigned char black[3];
 static unsigned char white[3];
 
-static int width = 10000;
-static int height = 10000;
+static int maxX = 100;
+static int maxY = 100;
 
 int main(int argc, const char **argv)
 {
-    const int width = 301, height = 301;
 
+    //Tile dimensions
     const int xDimension = 50, yDimension = 50;
+    int randomR, randomG, randomB;
+    int* intptr;
 
-
-
+    //seed random for color generation
     time_t t;
-
-    //seed random
     srand((unsigned)time(&t));
 
-    //generate random red green and blue sub colors
-    int randomR = rand() % MODULO_MAX;
-    int randomG = rand() % MODULO_MAX;
-    int randomB = rand() % MODULO_MAX;
+    //generate random, but consistent red green and blue sub colors
+    randomR = rand() % MODULO_MAX;
+    randomG = rand() % MODULO_MAX;
+    randomB = rand() % MODULO_MAX;
 
     //suggested algorithm
     //"dictionary" - if iteration encountered before, get color
     // if not, generate new color
 
-    int* intptr = generateSquareDimensions(xDimension,yDimension);
+    intptr = generateSquareDimensions(xDimension,yDimension);
 
     free(intptr);
 
-    createSquare(1200,5000,1000,1000,randomR,randomG,randomB);
+    createSquare(200,200,0,0,1000,1000,randomR,randomG,randomB);
 
     //We are returning here
     return EXIT_SUCCESS;
-
-
 
 }
 
@@ -104,31 +101,31 @@ void* generateSquareDimensions(int xDimension, int yDimension){
     int testDimensionX = 0, testDimensionY = 0;
 
     // y outer
-    while (currentY < height) {
+    while (currentY < maxY) {
 
         testY += yDimension;
         testDimensionY = yDimension;
 
-        if (testY >= height) {
-            testY = height;
+        if (testY >= maxY) {
+            testY = maxY;
             //update yDimension
-            testDimensionY = height - currentY;
+            testDimensionY = maxY - currentY;
         }
 
         testDimensionY = min(yDimension, testDimensionY);
 
         //x inner
-        while (currentX < width) {
+        while (currentX < maxX) {
 
             testX += xDimension;
 
             testDimensionX = min(xDimension, testDimensionX);
 
-            if (testX >= width) {
-                testX = width;
+            if (testX >= maxX) {
+                testX = maxX;
 
                 //update xDimension
-                testDimensionX = width - currentX;
+                testDimensionX = maxX - currentX;
 
             }
 
@@ -155,14 +152,13 @@ void* generateSquareDimensions(int xDimension, int yDimension){
 }
 
 
-void createSquare(int x,int y,int dimensionX, int dimensionY ,int r, int g, int b){
+void createSquare(int maxX, int maxY, int originX, int originY, int dimensionX, int dimensionY, int r, int g, int b){
 
-    printf("will create a square at x:%d y:%d, with dimension x: %d, y:%d, r %d, g %d b %d\n", x, y, dimensionX, dimensionY, r, g, b);
-
-    printf("x:%d to %d, y:%d to %d\n", x, x+dimensionX, y, y+dimensionY);
+    printf("will create a square at x:%d y:%d, with dimension x: %d, y:%d, r %d, g %d b %d\n", originX, originY, dimensionX, dimensionY, r, g, b);
+    printf("the entire set is contained withing width: %d, height:%d\n",maxX,maxY);
+    printf("x:%d to %d, y:%d to %d\n", originX, originX+dimensionX, originY, originY+dimensionY);
 
     //create ppm with dimensions
-
 
     white[0] = 255;  /* red */
     white[1] = 255;  /* green */
@@ -175,13 +171,13 @@ void createSquare(int x,int y,int dimensionX, int dimensionY ,int r, int g, int 
     FILE *fp = fopen("test.ppm", "wb");
     (void) fprintf(fp, "P6\n%d %d\n255\n", dimensionX, dimensionY);
 
-    int dimensionXMax = x + dimensionX;
-    int dimensionYMax = y + dimensionY;
+    int dimensionXMax = originX + dimensionX;
+    int dimensionYMax = originY + dimensionY;
 
-    for (int row = y; row < dimensionYMax; row++) {
-        for (int col = x; col < dimensionXMax; col++) {
-            double c_re = (col - width/2.0)*4.0/width;
-            double c_im = (row - height/2.0)*4.0/width;
+    for (int row = originY; row < dimensionYMax; row++) {
+        for (int col = originX; col < dimensionXMax; col++) {
+            double c_re = (col - maxX / 2.0) * 4.0 / maxX;
+            double c_im = (row - maxY / 2.0) * 4.0 / maxX;
             double x = 0, y = 0;
             int iteration = 0;
             while (x*x+y*y <= 4 && iteration < ITERATION_MAX) {
