@@ -9,5 +9,5 @@ set(CMAKE_C_STANDARD 99)
 #link_directories(/usr/local/Cellar/cairo/1.16.0_3/lib)
 #include_directories(${CAIRO_INCLUDE_DIRS})
 
-add_executable(Brot main.c brot/brot.h brot/brot.c)
+add_executable(Brot main.c brot/brot.h brot/brot.c Rect/rect.c Rect/rect.h)
 #target_link_libraries(Brot cairo)

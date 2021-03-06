@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <time.h>
 #include "brot/brot.h"
+#include "Rect/rect.h"
+#include <assert.h>
+
 
 #define MODULO_MAX 256
 
@@ -49,6 +52,13 @@ int main(int argc, const char **argv)
      */
     int* myintPtr = generateSquareDimensions(1000,1000);
 
+
+    //Get the point?
+    Rect *myRect = makeRect(0,0,100,100);
+    Point *center = getCenter(myRect);
+
+    assert(center->x == 50);
+    assert(center->y == 50);
 
     //We are returning here
     return EXIT_SUCCESS;
