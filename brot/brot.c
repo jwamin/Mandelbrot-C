@@ -11,10 +11,16 @@
 static unsigned char black[3] = {0,0,0};
 static unsigned char white[3] = {255,255,255};
 
-void drawEntireSet(FILE *fp, int width, int height, int xOff, int yOff, int r, int g, int b){
+/// drawEntireSet - draw mandelbrot set within the bounds provided
+/// \param fp output file pointer writable binary
+/// \param width the width of the set in px
+/// \param height the height of the set in px
+/// \param r the red color base for this rendering 0-255
+/// \param g the green color base for this rendering 0-255
+/// \param b the blue color base for this rendering 0-255
+void drawEntireSet(FILE *fp, int width, int height, uint r, uint g, uint b){
 
-    int xOffset = xOff | 0;
-    int yOffset = yOff | 0;
+    (void) fprintf(fp, "P6\n%d %d\n255\n", width, height);
 
     int randomR = r;
     int randomB = b;
@@ -22,8 +28,8 @@ void drawEntireSet(FILE *fp, int width, int height, int xOff, int yOff, int r, i
 
     for (int row = 0; row < height; row++) {
         for (int col = 0; col < width; col++) {
-            double c_re = (col - width/2.0)*4.0/width + xOffset;
-            double c_im = (row - height/2.0)*4.0/width + yOffset;
+            double c_re = (col - width/2.0)*4.0/width;
+            double c_im = (row - height/2.0)*4.0/width;
             double x = 0, y = 0;
             int iteration = 0;
             while (x*x+y*y <= 4 && iteration < ITERATION_MAX) {
@@ -40,7 +46,6 @@ void drawEntireSet(FILE *fp, int width, int height, int xOff, int yOff, int r, i
                 other[1] = randomG * increase;  /* green */
                 other[2] = randomB * increase;  /* blue */
 
-                //printf("iteration: %d other: r:%d, g:%d, b:%d\n",iteration,other[0],other[1],other[2]);
                 (void) fwrite(other, 1, 3, fp);
             } else {
                 (void) fwrite(black, 1, 3, fp);

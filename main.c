@@ -26,11 +26,29 @@ int main(int argc, const char **argv)
     //"dictionary" - if iteration encountered before, get color
     // if not, generate new color
 
-    intptr = generateSquareDimensions(xDimension,yDimension);
+    //Main Routine
 
-    free(intptr);
+    /*
+     * Complete Set
+     */
+    //Draw set within bounds
 
+    //Create file pointer
+    FILE *testFile = fopen("mytestfullset.ppm","wb");
+    //draw grayscale set within bounds
+    drawEntireSet(testFile,300,300,255,255,255);
+
+    /*
+    *  Draw partial rect of set (zoom, pan effect)
+    */
+    //Defined bounds of set
     createSquare(200,200,0,0,200,200, randomR, randomG, randomB);
+
+    /*
+     * Generate Rects for partial rendering, such as with threading or hardware accelleration
+     */
+    int* myintPtr = generateSquareDimensions(1000,1000);
+
 
     //We are returning here
     return EXIT_SUCCESS;
