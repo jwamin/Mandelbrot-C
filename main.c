@@ -1,6 +1,9 @@
+#ifndef arc4random_uniform
+#include <bsd/stdlib.h>
+#else
 #include <stdlib.h>
+#endif
 #include <stdio.h>
-#include <time.h>
 #include "brot/brot.h"
 #include "Rect/rect.h"
 #include <assert.h>
@@ -16,14 +19,12 @@ int main(int argc, const char **argv)
     uint randomR, randomG, randomB;
     int* intptr;
 
-    //seed random for color generation
-    time_t t;
-    srand((unsigned)time(&t));
-
     //generate random, but consistent red green and blue sub colors
-    randomR = rand() % MODULO_MAX;
-    randomG = rand() % MODULO_MAX;
-    randomB = rand() % MODULO_MAX;
+    randomR = arc4random_uniform(255);
+    randomG = arc4random_uniform(255);
+    randomB = arc4random_uniform(255);
+
+    printf("random r:%d g:%d b:%d\n",randomR,randomG,randomB);
 
     //suggested algorithm
     //"dictionary" - if iteration encountered before, get color
