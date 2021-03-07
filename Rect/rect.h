@@ -8,13 +8,13 @@
 #include <stdlib.h>
 
 typedef struct Point {
-    uint x;
-    uint y;
+    unsigned int x;
+    unsigned int y;
 } Point;
 
 typedef struct Size {
-    uint width;
-    uint height;
+    unsigned int width;
+    unsigned int height;
 } Size;
 
 typedef struct Rect{
@@ -25,7 +25,7 @@ typedef struct Rect{
 
 /*basic rect helpers*/
 
-struct Rect* makeRect(uint x,uint y,uint width,uint height);
+struct Rect* makeRect(unsigned int x,unsigned int y,unsigned int width,unsigned int height);
 
 struct Point* getCenter(struct Rect* rect);
 

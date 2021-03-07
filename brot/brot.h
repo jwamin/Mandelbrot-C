@@ -8,8 +8,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void drawEntireSet(FILE *fp, int width, int height, uint r, uint g, uint b);
-void createSquare(int maxX, int maxY, int originX, int originY, int dimensionX, int dimensionY, uint r, uint g, uint b);
+void drawEntireSet(FILE *fp, int width, int height, unsigned int r, unsigned int g, unsigned int b);
+void createSquare(int maxX, int maxY, int originX, int originY, int dimensionX, int dimensionY, unsigned int r, unsigned int g, unsigned int b);
 void* generateSquareDimensions(int xDimension, int yDimension);
 
 #endif //BROT_BROT_H
