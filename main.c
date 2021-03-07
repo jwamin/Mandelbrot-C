@@ -1,13 +1,14 @@
-#ifndef arc4random_uniform
-#include <bsd/stdlib.h>
-#else
+
 #include <stdlib.h>
+
+#if defined(NOTHASARC4RANDOM)
+#include <bsd/stdlib.h>
 #endif
+
 #include <stdio.h>
 #include "brot/brot.h"
 #include "Rect/rect.h"
 #include <assert.h>
-
 
 #define MODULO_MAX 256
 
@@ -16,7 +17,7 @@ int main(int argc, const char **argv)
 
     //Tile dimensions
     const int xDimension = 50, yDimension = 50;
-    uint randomR, randomG, randomB;
+    unsigned int randomR, randomG, randomB;
     int* intptr;
 
     //generate random, but consistent red green and blue sub colors

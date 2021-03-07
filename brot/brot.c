@@ -18,7 +18,7 @@ static unsigned char white[3] = {255,255,255};
 /// \param r the red color base for this rendering 0-255
 /// \param g the green color base for this rendering 0-255
 /// \param b the blue color base for this rendering 0-255
-void drawEntireSet(FILE *fp, int width, int height, uint r, uint g, uint b){
+void drawEntireSet(FILE *fp, int width, int height, unsigned int r, unsigned int g, unsigned int b){
 
     (void) fprintf(fp, "P6\n%d %d\n255\n", width, height);
 
@@ -132,7 +132,7 @@ void* generateSquareDimensions(int xDimension, int yDimension){
 /// \param r the red color base for this rendering 0-255
 /// \param g the green color base for this rendering 0-255
 /// \param b the blue color base for this rendering 0-255
-void createSquare(int maxX, int maxY, int originX, int originY, int dimensionX, int dimensionY, uint r, uint g, uint b){
+void createSquare(int maxX, int maxY, int originX, int originY, int dimensionX, int dimensionY, unsigned int r, unsigned int g, unsigned int b){
 
     printf("will create a square at x:%d y:%d, with dimension x: %d, y:%d, r %d, g %d b %d\n", originX, originY, dimensionX, dimensionY, r, g, b);
     printf("the entire set is contained withing width: %d, height:%d\n",maxX,maxY);
