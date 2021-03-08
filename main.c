@@ -1,6 +1,8 @@
 #include <stdlib.h>
 
-#ifndef arc4random_uniform
+#if defined(HASARC4RANDOM)
+
+#else
 #include <bsd/stdlib.h>
 #endif
 
