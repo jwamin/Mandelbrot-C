@@ -39,3 +39,5 @@ Hardware Acceleration? - Metal or OpenGL Fragment Shader
 [Joni's Blog - The Mindful Programmer](https://jonisalonen.com/2013/lets-draw-the-mandelbrot-set/)
 
 [Bitmap images without any external libraries](https://stackoverflow.com/questions/50090500/create-simple-bitmap-in-c-without-external-libraries)
+
+[LibJpeg example](https://github.com/LuaDist/libjpeg/blob/master/example.c)

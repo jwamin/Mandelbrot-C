@@ -9,6 +9,8 @@
 #include "Rect/rect.h"
 #include <assert.h>
 
+#include <jpeglib.h>
+
 #define MODULO_MAX 256
 
 int main(int argc, const char **argv)
@@ -49,12 +51,20 @@ int main(int argc, const char **argv)
     createSquare(200,200,0,0,200,200, randomR, randomG, randomB);
 
     /*
-     * Generate Rects for partial rendering, such as with threading or hardware accelleration
+     * Generate Rects for partial rendering, such as with threading or hardware acceleration
      */
     int* myintPtr = generateSquareDimensions(1000,1000);
+    free(myintPtr);
 
+    //libjpeg test
+    FILE *raw = fopen("lossless.ppm","r");
+    FILE *out = fopen("test.jpeg","wb");
 
-    //Get the point?
+    j_compress_ptr my;
+
+    jpeg_stdio_dest(my, out);
+
+    //Rects - Get the point?
     Rect *myRect = makeRect(0,0,100,100);
     Point *center = getCenter(myRect);
 

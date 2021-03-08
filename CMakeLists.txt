@@ -11,6 +11,8 @@ set(CMAKE_C_STANDARD 99)
 
 add_executable(Brot main.c brot/brot.h brot/brot.c Rect/rect.c Rect/rect.h)
 
+#include_directories(/usr/local/Cellar/jpeg/9d/include)
+
 include(CheckSymbolExists)
 check_symbol_exists(arc4random_uniform "stdlib.h" HASARC4RANDOM)
 if(NOT (HASARC4RANDOM))
@@ -18,6 +20,9 @@ if(NOT (HASARC4RANDOM))
     target_compile_definitions(Brot PRIVATE NOTHASARC4RANDOM)
 endif ()
 
+target_include_directories(Brot PRIVATE /usr/local/Cellar/jpeg/9d/include)
+target_include_directories(Brot PRIVATE /usr/local/Cellar/jpeg/9d/lib)
 
+target_link_libraries(Brot /usr/local/Cellar/jpeg/9d/lib/libjpeg.a)
 
 #target_link_libraries(Brot cairo)

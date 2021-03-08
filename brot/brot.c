@@ -140,7 +140,7 @@ void createSquare(int maxX, int maxY, int originX, int originY, int dimensionX, 
 
     //create ppm with dimensions
 
-    FILE *fp = fopen("test.ppm", "wb");
+    FILE *fp = fopen("lossless.ppm", "wb");
     (void) fprintf(fp, "P6\n%d %d\n255\n", dimensionX, dimensionY);
 
     int dimensionXMax = originX + dimensionX;
