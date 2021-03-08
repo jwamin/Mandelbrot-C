@@ -13,6 +13,7 @@ include(CheckSymbolExists)
 check_symbol_exists(arc4random_uniform "stdlib.h" HASARC4RANDOM)
 if(NOT (HASARC4RANDOM))
     link_libraries(bsd bsd)
+    target_compile_definitions(Brot PRIVATE NOTHASARC4RANDOM)
 endif ()
 
 

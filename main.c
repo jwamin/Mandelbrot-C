@@ -1,16 +1,13 @@
-#include <stdlib.h>
-
-#if defined(HASARC4RANDOM)
-
-#else
+#if defined(NOTHASARC4RANDOM)
 #include <bsd/stdlib.h>
+#else
+#include <stdlib.h>
 #endif
 
 #include <stdio.h>
 #include "brot/brot.h"
 #include "Rect/rect.h"
 #include <assert.h>
-
 
 #define MODULO_MAX 256
 
