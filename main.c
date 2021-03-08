@@ -1,8 +1,8 @@
 #include <stdlib.h>
 
-//#ifndef arc4random_uniform
-//#include <bsd/stdlib.h>
-//#endif
+#ifndef arc4random_uniform
+#include <bsd/stdlib.h>
+#endif
 
 #include <stdio.h>
 #include "brot/brot.h"
