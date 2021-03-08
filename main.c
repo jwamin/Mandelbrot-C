@@ -1,8 +1,7 @@
-
-#include <stdlib.h>
-
 #if defined(NOTHASARC4RANDOM)
 #include <bsd/stdlib.h>
+#else
+#include <stdlib.h>
 #endif
 
 #include <stdio.h>
