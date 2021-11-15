@@ -26,6 +26,8 @@ void drawEntireSet(FILE *fp, int width, int height, unsigned int r, unsigned int
     int randomB = b;
     int randomG = g;
 
+    unsigned char other[3];
+
     for (int row = 0; row < height; row++) {
         for (int col = 0; col < width; col++) {
             double c_re = (col - width/2.0)*4.0/width;
@@ -40,7 +42,7 @@ void drawEntireSet(FILE *fp, int width, int height, unsigned int r, unsigned int
             }
             if (iteration < ITERATION_MAX) {
                 int increase = iteration * 100;
-                static unsigned char other[3];
+
 
                 other[0] = randomR * increase;  /* red */
                 other[1] = randomG * increase;  /* green */
