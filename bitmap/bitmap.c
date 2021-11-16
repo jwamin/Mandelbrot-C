@@ -72,7 +72,7 @@ void testBMP(){
     BmpHeader *header = newHeader();
 
     FILE *outBMP = fopen("test.bmp","wb");
-    char* data = malloc(sizeof(char) * header->sizeOfBitmapFile);
+    char* data = malloc(sizeof(char) * (header->sizeOfBitmapFile * 10));
     size_t pixels = header->width * header->height;
     size_t *numberOfPixels = malloc(sizeof pixels);
     size_t success;
@@ -104,12 +104,14 @@ void testBMP(){
     printf("const char pixel: %s\n",(char*)&myColor);
 
     const char* color[3] = {&b,&g,&r};
+    char* test = malloc(sizeof(char) * 3);
     printf("color %s\n",*color);
     for (int i = 0; i < pixels; ++i) {
-        sprintf()
-        strcat(data,(const char*)&b);
-        strcat(data,(const char*)&g);
-        strcat(data,(const char*)&r);
+        sprintf(test,"%s%s%s",(const char*)&b,(const char*)&g,(const char*)&r);
+        strcat(data,test);
+//        strcat(data,(const char*)&b);
+//        strcat(data,(const char*)&g);
+//        strcat(data,(const char*)&r);
 //        fwrite((char *)&b, 1, 1, outBMP);
 //        fwrite((char *)&g, 1, 1, outBMP);
 //        fwrite((char *)&r, 1, 1, outBMP);
@@ -122,9 +124,9 @@ void testBMP(){
 
     fwrite(&header, sizeof(BmpHeader),1,outBMP);
     printf("data %c\n",*data);
-    printf("sizeof header %d\n",sizeof header);
-    printf("sizeof data %d\n", strlen(data) * sizeof(char));
-    fwrite(data, sizeof data,1,outBMP);
+    printf("sizeof header %lu\n",sizeof &header);
+    printf("sizeof data %lu\n", strlen(data) * sizeof(char));
+    fwrite(&data, sizeof data,1,outBMP);
     printf("closing file\n");
     fclose(outBMP);
 
