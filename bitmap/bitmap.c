@@ -5,6 +5,9 @@
 #include "bitmap.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+
+//https://codereview.stackexchange.com/questions/196084/read-and-write-bmp-file-in-c
 
 #pragma pack(push)  // save the original data alignment
 #pragma pack(1)     // Set data alignment to 1 byte boundary
@@ -14,9 +17,6 @@ typedef struct BmpHeader {
     uint32_t sizeOfBitmapFile;
     uint32_t reservedBytes;
     uint32_t pixelDataOffset;
-} BmpHeader;
-
-typedef struct BmpInfoHeader {
     uint32_t sizeOfThisHeader;
     int32_t width;  // in pixels
     int32_t height; // in pixels
@@ -28,9 +28,16 @@ typedef struct BmpInfoHeader {
     int32_t verticalResolution; // in pixel per meter
     uint32_t colorTableEntries;
     uint32_t importantColors;
-} BmpInfoHeader;
+} BmpHeader;
 
 #pragma pack(pop)
+
+typedef struct BmpImage {
+    BmpHeader header;
+    unsigned char* data;
+} BmpImage;
+
+
 
 typedef struct Pixel {
     uint8_t blue;
@@ -40,37 +47,33 @@ typedef struct Pixel {
 
 
 
-BmpHeader* newTestHeader() {
+BmpHeader* newHeader() {
     BmpHeader *header = malloc(sizeof(BmpHeader));
     header->type = 0x4d42;
     header->sizeOfBitmapFile = 54 + 786432;
     header->reservedBytes = 0;
     header->pixelDataOffset = 54;
+    header->sizeOfThisHeader = 40;
+    header->width = 512; // in pixels
+    header->height = 512; // in pixels
+    header->numberOfColorPlanes = 1; // must be 1
+    header->colorDepth = 24;
+    header->compressionMethod = 0;
+    header->rawBitmapDataSize = 0; // generally ignored
+    header->horizontalResolution = 3780; // in pixel per meter
+    header->verticalResolution = 3780; // in pixel per meter
+    header->colorTableEntries = 0;
+    header->importantColors = 0;
     return header;
-}
-
-BmpInfoHeader* newInfoHeader() {
-    BmpInfoHeader *infoHeader = malloc(sizeof(BmpInfoHeader));
-    infoHeader->sizeOfThisHeader = 40;
-    infoHeader->width = 512; // in pixels
-    infoHeader->height = 512; // in pixels
-    infoHeader->numberOfColorPlanes = 1; // must be 1
-    infoHeader->colorDepth = 24;
-    infoHeader->compressionMethod = 0;
-    infoHeader->rawBitmapDataSize = 0; // generally ignored
-    infoHeader->horizontalResolution = 3780; // in pixel per meter
-    infoHeader->verticalResolution = 3780; // in pixel per meter
-    infoHeader->colorTableEntries = 0;
-    infoHeader->importantColors = 0;
-    return infoHeader;
 }
 
 void testBMP(){
 
-    BmpHeader *header = newTestHeader();
-    BmpInfoHeader *infoHeader = newInfoHeader();
+    BmpHeader *header = newHeader();
+
     FILE *outBMP = fopen("test.bmp","wb");
-    size_t pixels = infoHeader->width * infoHeader->height;
+    char* data = malloc(sizeof(char) * header->sizeOfBitmapFile);
+    size_t pixels = header->width * header->height;
     size_t *numberOfPixels = malloc(sizeof pixels);
     size_t success;
     *numberOfPixels = pixels;
@@ -91,10 +94,9 @@ void testBMP(){
     printf("bitmap char: %c\n", header->type);
 
     printf("sizeof header is %lu\n",sizeof(BmpHeader));
-    printf("sizeof infoheader is %lu\n",sizeof(BmpInfoHeader));
+    printf("sizeof infoheader is %lu\n",sizeof(BmpHeader));
 
-    fwrite((char*)&header, 14,1, outBMP);
-    fwrite((char*)&infoHeader, 40,1, outBMP);
+    fwrite((char*)&header, 54,1, outBMP);
 
     printf("so we're going to write %lu things\n",*numberOfPixels);
     printf("so... header is %s \n", (char*)header);
@@ -103,16 +105,26 @@ void testBMP(){
 
     const char* color[3] = {&b,&g,&r};
     printf("color %s\n",*color);
-    for (int i = 0; i < *numberOfPixels; ++i) {
-        //printf("blue: %s green: %s red: %s\n",(const char*)&b,(const char*)&g,(const char*)&r);
-        //success = fwrite((char *)&color,1,3,outBMP);
-//        if (success != 3){
-//            exit(EXIT_FAILURE);
-//        }
-        fwrite((char *)&b, 1, 1, outBMP);
-        fwrite((char *)&g, 1, 1, outBMP);
-        fwrite((char *)&r, 1, 1, outBMP);
+    for (int i = 0; i < pixels; ++i) {
+        sprintf()
+        strcat(data,(const char*)&b);
+        strcat(data,(const char*)&g);
+        strcat(data,(const char*)&r);
+//        fwrite((char *)&b, 1, 1, outBMP);
+//        fwrite((char *)&g, 1, 1, outBMP);
+//        fwrite((char *)&r, 1, 1, outBMP);
     }
+
+    BmpImage *image = malloc(sizeof(BmpImage));
+    image->header = *header;
+    image->data = malloc(sizeof data);
+    image->data = *data;
+
+    fwrite(&header, sizeof(BmpHeader),1,outBMP);
+    printf("data %c\n",*data);
+    printf("sizeof header %d\n",sizeof header);
+    printf("sizeof data %d\n", strlen(data) * sizeof(char));
+    fwrite(data, sizeof data,1,outBMP);
     printf("closing file\n");
     fclose(outBMP);
 
