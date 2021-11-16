@@ -8,6 +8,7 @@
 #include "brot/brot.h"
 #include "Rect/rect.h"
 #include "bitmap/bitmap.h"
+#include "bitmap/bitmap-copy.h"
 #include <assert.h>
 
 #include <jpeglib.h>
@@ -60,6 +61,9 @@ int main(int argc, const char **argv)
 
     //bmp test
     testBMP();
+
+    //stacky test bmp
+    int testSuccess = createTestBMP();
 
     //libjpeg test
     FILE *raw = fopen("lossless.ppm","r");
