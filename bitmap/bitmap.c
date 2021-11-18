@@ -107,7 +107,7 @@ void testBMP(){
     char* test = malloc(sizeof(char) * 3);
     printf("color %s\n",*color);
     for (int i = 0; i < pixels; ++i) {
-        sprintf(test,"%s%s%s",(const char*)&b,(const char*)&g,(const char*)&r);
+        sprintf(test,"%s%s%s",(const unsigned char*)&b,(const unsigned char*)&g,(const unsigned char*)&r);
         strcat(data,test);
 //        strcat(data,(const char*)&b);
 //        strcat(data,(const char*)&g);
