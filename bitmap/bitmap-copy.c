@@ -4,6 +4,8 @@
 
 #include "bitmap-copy.h"
 
+//https://stackoverflow.com/questions/2654480/writing-bmp-image-in-pure-c-c-without-other-libraries
+
 #include <stdio.h>
 
 const int BYTES_PER_PIXEL = 3; /// red, green, & blue
