@@ -7,38 +7,87 @@
 //https://stackoverflow.com/questions/2654480/writing-bmp-image-in-pure-c-c-without-other-libraries
 
 #include <stdio.h>
+#include <stdlib.h>
 
 const int BYTES_PER_PIXEL = 3; /// red, green, & blue
 const int FILE_HEADER_SIZE = 14;
 const int INFO_HEADER_SIZE = 40;
 
-void generateBitmapImage(unsigned char* image, int height, int width, char* imageFileName);
+void generateBitmapImage(unsigned char*** image, int height, int width, char* imageFileName);
 unsigned char* createBitmapFileHeader(int height, int stride);
 unsigned char* createBitmapInfoHeader(int height, int width);
 
 
 int createTestBMP ()
 {
-    int height = 361;
-    int width = 867;
-    unsigned char image[height][width][BYTES_PER_PIXEL];
-    char* imageFileName = (char*) "bitmapImage.bmp";
+    int height = 100;
+    int width = 200;
+    size_t sizeOfImage = height * width;
+
+    unsigned char*** image = malloc( sizeof image * height);
 
     int i, j;
-    for (i = 0; i < height; i++) {
+    for (i = 0; i < height; i++)
+    {
+        image[i] = malloc(sizeof *image[i] * width);
         for (j = 0; j < width; j++) {
-            image[i][j][2] = (unsigned char) ( i * 255 / height );             ///red
-            image[i][j][1] = (unsigned char) ( j * 255 / width );              ///green
-            image[i][j][0] = (unsigned char) ( (i+j) * 255 / (height+width) ); ///blue
+            image[i][j] = (unsigned char*)malloc(sizeof(char) * BYTES_PER_PIXEL);
         }
+
     }
 
-    generateBitmapImage((unsigned char*) image, height, width, imageFileName);
+    char* imageFileName = (char*) "bitmapImage.bmp";
+
+    unsigned char* colorAtIndex;
+    for (i = 0; i < height; i++) {
+        for (j = 0; j < width; j++) {
+            image[i][j][2] = 255;//(unsigned char) ( i * 255 / height );             ///red
+            image[i][j][1] = 0;//(unsigned char) ( j * 255 / width );              ///green
+            image[i][j][0] = 255;//(unsigned char) ( (i+j) * 255 / (height+width) ); ///blue
+        }
+    }
+    printf("0 array subscript access\nimage pointer: %p\n",image);
+    printf("int cast - first index: b:%d g:%d r:%d\n",(unsigned int)image[0][0][0],(unsigned int)image[0][0][1],(unsigned int)image[0][0][2]);
+    printf("pointers - first index: b:%p g:%p r:%p\n",&image[0][0][0],&image[0][0][1],&image[0][0][2]);
+
+    printf("1 array subscript access\nimage pointer: %p\n",image);
+    printf("int cast - first index: b:%d g:%d r:%d\n",(unsigned int)image[0][1][0],(unsigned int)image[0][1][1],(unsigned int)image[0][1][2]);
+    printf("pointers - first index: b:%p g:%p r:%p\n",&image[0][1][0],&image[0][1][1],&image[0][1][2]);
+
+    printf("pointer address access\n");
+    printf("pointer - first index: b:%d g:%d r:%d\n", (unsigned int)*(&***(image)+ sizeof(char) * 0), (unsigned int)*(&***(image)+ sizeof(char) * 1), (unsigned int)*(&***(image)+ sizeof(char) * 2));
+
+    printf("pointers - first index: b:%p g:%p r:%p\n",&***(image) + sizeof(char) * 0, &***(image)+ sizeof(char) * 1, &***(image)+ sizeof(char) * 2);
+
+    printf("Info\nSize of unsigned char: %lu\nSize of unsigned int: %lu\n", sizeof(unsigned char), sizeof(unsigned int));
+
+    printf("loop test\n");
+
+    unsigned char* row;
+    for (int k = 0; k < width; ++k) {
+        row = &***(image) + (k * (width+1)) ;
+        for (int l = 0; l < BYTES_PER_PIXEL; ++l) {
+            printf("%d ",(unsigned int)*(&*row+ sizeof(char) * l));
+        }
+        printf("\n");
+        for (int l = 0; l < BYTES_PER_PIXEL; ++l) {
+            printf("%p ",&*row+ sizeof(char) * l);
+        }
+        printf("\n");
+    }
+    printf("\ndone...\n");
+
+
+    generateBitmapImage(image, height, width, imageFileName);
+    free(image);
     printf("Image generated!!");
+
+    return 0;
+
 }
 
 
-void generateBitmapImage (unsigned char* image, int height, int width, char* imageFileName)
+void generateBitmapImage (unsigned char*** image, int height, int width, char* imageFileName)
 {
     int widthInBytes = width * BYTES_PER_PIXEL;
 
@@ -57,7 +106,15 @@ void generateBitmapImage (unsigned char* image, int height, int width, char* ima
 
     int i;
     for (i = 0; i < height; i++) {
-        fwrite(image + (i*widthInBytes), BYTES_PER_PIXEL, width, imageFile);
+        for (int l = 0; l < width; ++l) {
+            for (int j = 0; j < BYTES_PER_PIXEL; ++j) {
+                fwrite((unsigned char*)&image[i][l][j], sizeof(unsigned char), 1, imageFile);
+                //printf("%d ",(unsigned int)*&image[i][l][j]);
+            }
+            printf(" - ");
+        }
+        printf("\n");
+        //fwrite(row, BYTES_PER_PIXEL, width, imageFile);
         fwrite(padding, 1, paddingSize, imageFile);
     }
 

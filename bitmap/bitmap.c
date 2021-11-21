@@ -7,10 +7,64 @@
 #include <stdio.h>
 #include <string.h>
 
+#define BYTES_PER_PIXEL 3
+#define FILE_HEADER_SIZE 14
+#define INFO_HEADER_SIZE 40
+
 //https://codereview.stackexchange.com/questions/196084/read-and-write-bmp-file-in-c
 
-#pragma pack(push)  // save the original data alignment
-#pragma pack(1)     // Set data alignment to 1 byte boundary
+unsigned char* _createBitmapFileHeader (int height, int stride)
+{
+    int fileSize = FILE_HEADER_SIZE + INFO_HEADER_SIZE + (stride * height);
+
+    static unsigned char fileHeader[] = {
+            0,0,     /// signature
+            0,0,0,0, /// image file size in bytes
+            0,0,0,0, /// reserved
+            0,0,0,0, /// start of pixel array
+    };
+
+    fileHeader[ 0] = (unsigned char)('B');
+    fileHeader[ 1] = (unsigned char)('M');
+    fileHeader[ 2] = (unsigned char)(fileSize      );
+    fileHeader[ 3] = (unsigned char)(fileSize >>  8);
+    fileHeader[ 4] = (unsigned char)(fileSize >> 16);
+    fileHeader[ 5] = (unsigned char)(fileSize >> 24);
+    fileHeader[10] = (unsigned char)(FILE_HEADER_SIZE + INFO_HEADER_SIZE);
+
+    return fileHeader;
+}
+
+unsigned char* _createBitmapInfoHeader (int height, int width)
+{
+    static unsigned char infoHeader[] = {
+            0,0,0,0, /// header size
+            0,0,0,0, /// image width
+            0,0,0,0, /// image height
+            0,0,     /// number of color planes
+            0,0,     /// bits per pixel
+            0,0,0,0, /// compression
+            0,0,0,0, /// image size
+            0,0,0,0, /// horizontal resolution
+            0,0,0,0, /// vertical resolution
+            0,0,0,0, /// colors in color table
+            0,0,0,0, /// important color count
+    };
+
+    infoHeader[ 0] = (unsigned char)(INFO_HEADER_SIZE);
+    infoHeader[ 4] = (unsigned char)(width      );
+    infoHeader[ 5] = (unsigned char)(width >>  8);
+    infoHeader[ 6] = (unsigned char)(width >> 16);
+    infoHeader[ 7] = (unsigned char)(width >> 24);
+    infoHeader[ 8] = (unsigned char)(height      );
+    infoHeader[ 9] = (unsigned char)(height >>  8);
+    infoHeader[10] = (unsigned char)(height >> 16);
+    infoHeader[11] = (unsigned char)(height >> 24);
+    infoHeader[12] = (unsigned char)(1);
+    infoHeader[14] = (unsigned char)(BYTES_PER_PIXEL*8);
+
+    return infoHeader;
+}
 
 typedef struct BmpHeader {
     uint16_t type;
@@ -30,22 +84,16 @@ typedef struct BmpHeader {
     uint32_t importantColors;
 } BmpHeader;
 
-#pragma pack(pop)
-
 typedef struct BmpImage {
     BmpHeader header;
     unsigned char* data;
 } BmpImage;
-
-
 
 typedef struct Pixel {
     uint8_t blue;
     uint8_t green;
     uint8_t red;
 } Pixel;
-
-
 
 BmpHeader* newHeader() {
     BmpHeader *header = malloc(sizeof(BmpHeader));
@@ -80,7 +128,7 @@ void testBMP(){
 
     //Magenta color
     Pixel *myColor = malloc(sizeof(Pixel));
-    myColor->blue = 254;
+    myColor->blue = 255;
     myColor->green = 100;
     myColor->red = 255;
 
@@ -93,40 +141,50 @@ void testBMP(){
     printf("blue: %d green: %d red: %d\n",b,g,r);
     printf("bitmap char: %c\n", header->type);
 
-    printf("sizeof header is %lu\n",sizeof(BmpHeader));
-    printf("sizeof infoheader is %lu\n",sizeof(BmpHeader));
 
-    fwrite((char*)&header, 54,1, outBMP);
+
+    //fwrite((char*)&header, 54,1, outBMP);
 
     printf("so we're going to write %lu things\n",*numberOfPixels);
     printf("so... header is %s \n", (char*)header);
     printf("sizeof mycolor is %lu\n",sizeof(Pixel));
     printf("const char pixel: %s\n",(char*)&myColor);
 
-    const char* color[3] = {&b,&g,&r};
-    char* test = malloc(sizeof(char) * 3);
-    printf("color %s\n",*color);
-    for (int i = 0; i < pixels; ++i) {
-        sprintf(test,"%s%s%s",(const unsigned char*)&b,(const unsigned char*)&g,(const unsigned char*)&r);
-        strcat(data,test);
-//        strcat(data,(const char*)&b);
-//        strcat(data,(const char*)&g);
-//        strcat(data,(const char*)&r);
-//        fwrite((char *)&b, 1, 1, outBMP);
-//        fwrite((char *)&g, 1, 1, outBMP);
-//        fwrite((char *)&r, 1, 1, outBMP);
+    printf("will write:\n");
+    printf("%s\n",(unsigned char*)header);
+    printf("sizeof header is %lu\n",sizeof(BmpHeader));
+    printf("value per pixel: %s\n",(unsigned char*)myColor);
+
+
+    unsigned char padding[3] = {0, 0, 0};
+
+    int height = 300;
+    int width = 300;
+    int widthInBytes = width * BYTES_PER_PIXEL;
+    int paddingSize = (4 - (widthInBytes) % 4) % 4;
+
+    int stride = width + paddingSize;
+
+    unsigned char* fileHeader = _createBitmapFileHeader(height, stride);
+    fwrite(fileHeader, 1, FILE_HEADER_SIZE, outBMP);
+
+    unsigned char* infoHeader = _createBitmapInfoHeader(height, width);
+    fwrite(infoHeader, 1, INFO_HEADER_SIZE, outBMP);
+
+    int i;
+    unsigned char* charMyColor = (unsigned char*)myColor;
+    for (i = 0; i < header->height; i++) {
+        for (int l = 0; l < header->width; ++l) {
+            for (int j = 0; j < BYTES_PER_PIXEL; ++j) {
+                fwrite((unsigned char*)&charMyColor[j], 1,1,outBMP);
+            }
+                //fwrite((unsigned char*)myColor, sizeof(Pixel),1,outBMP);
+                //printf("%s ",myColor);
+
+        }
+        fwrite(padding, 1,paddingSize,outBMP);
     }
 
-    BmpImage *image = malloc(sizeof(BmpImage));
-    image->header = *header;
-    image->data = malloc(sizeof data);
-    image->data = *data;
-
-    fwrite(&header, sizeof(BmpHeader),1,outBMP);
-    printf("data %c\n",*data);
-    printf("sizeof header %lu\n",sizeof &header);
-    printf("sizeof data %lu\n", strlen(data) * sizeof(char));
-    fwrite(&data, sizeof data,1,outBMP);
     printf("closing file\n");
     fclose(outBMP);
 

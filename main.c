@@ -63,7 +63,7 @@ int main(int argc, const char **argv)
     testBMP();
 
     //stacky test bmp
-    int testSuccess = createTestBMP();
+    //int testSuccess = createTestBMP();
 
     //libjpeg test
     FILE *raw = fopen("lossless.ppm","r");
